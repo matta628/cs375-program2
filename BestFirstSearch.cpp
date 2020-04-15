@@ -1,42 +1,34 @@
-/*
-Input:
-Line 1: n,c // n is the size of the problem (the total number of items) and C is the total weight limit 
-Lines 2 to n+1: wi,pi // wi is the weight of item i and pi is the profit of item i
-
-Output:
-Line 1: the size of the problem (i.e., the total number of items),the optimal value (i.e., the maximum 
-profit),the size (k) of the first optimal solution found (i.e., the size of the first optimal subset 
-of items found to produce the maximum profit)
-Line 2: the total number of nodes visited (by the algorithm from the start to the end of the search
-including the root and the last node visited in the binary search space tree),the total number of 
-leaf nodes visited
-Lines 3 to 3+(k-1): each line contains the weight and profit of an item selected in order for the 
-first optimal solution found.
-
-In this assignment, you need to implement the best-first-search branch and bound algorithm for the 
-0-1 knapsack problem introduced in the class. The algorithm needs to find one optimal solution as 
-quickly as possible. Note: the input problem instance may not contain items in decreasing order of 
-profit/weight, so your program needs to sort the items first before the search.
- */
 #include "StSpTree.h"
 
 using namespace std;
 
+/*main function parses the input text file and uses its information to build a state space tree
+  that will determine the max profit that can be made by selecting a subset of items, subject
+  to the constraint that the total weight of the items must be less than a certain capacity.
+  int argc: number of command arguments. Must be exactly 3: ./BestFirstSearch, argv[1], argv[2]
+  char* argv[1]: the title of the input file, which must contain the structure delineated in the
+                 program assignment overview
+  char* argv[2]: the title of the output file, which may or may not already exist. if it already
+                 exists, it will be overwritten. Otherwise a file named argv[2] will be created 
+				 and written to.
+ */
 int main(int argc, char** argv){
-	if (argc < 3) return -1;
+	if (argc != 3) return -1;
 	
-	char * in = argv[1];
-	ifstream input(in);
-	double n;
-	double c;
-	vector<string> items;
+	char * in = argv[1]; //the input text file's name
+	ifstream input(in); //an ifstream that reads from the file named "in"
+	double n; //number of items
+	double c; //capacity of the knapsack
+	vector<string> items; //vector of strings that represent each item
 
-	string line;
-	int i = 0;
+	string line; //each line of the input text file
+	int i = 0; //counter variable
 	while (input >> line){
 		if (i == 0){
+			//Substring of the first line, containing the number of items
 			string nStr = line.substr(0, line.find(","));
 			n = stoi(nStr);
+			//Substring of the first line, containing the capacity of the knapsack
 			string cStr = line.substr(line.find(",") + 1,-1);
 			c = stoi(cStr);
 		}
@@ -46,9 +38,8 @@ int main(int argc, char** argv){
 		i++;
 	}
 
+	//StateSpaceTree object that will create model this problem and output an answer.
 	StSpTree *tree = new StSpTree(n, c, items);
 	tree->bestFirstBandB();
 	tree->writeToFile(argv[2]);
-	//ofstream output(argv[2], ios::out | ios::trunc);
-	//output.close();
 }

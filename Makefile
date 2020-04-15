@@ -10,7 +10,5 @@ StSpTree.o: StSpTree.cpp StSpTree.h
 	g++ -c $(CFLAGS) StSpTree.cpp
 run: all
 	./BestFirstSearch input.txt output.txt
-valgrind: all
-	valgrind --leak-check=full ./BestFirstSearch input.txt output.txt
 clean:
 	rm *.o BestFirstSearch
