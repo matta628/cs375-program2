@@ -43,6 +43,7 @@ StSpTree::StSpTree(int n, double c, vector<string> & list){
   if the node's current weight exceeds the capacity, it returns -1
  */
 double StSpTree::bound(Node *node){
+	if (node == nullptr) return -1;
 	double bound = node->profit; // the bound initialized to the current node's profit
 	double weightSoFar = node->weight; // keeps track of the weight so far
 	if (weightSoFar > capacity) return -1;
@@ -95,7 +96,7 @@ void StSpTree::bestFirstBandB(){
 			Node * u = new Node(v, uLevel, uWeight, uProfit); // v's yes child node
 			u->bound = bound(u);
 			v->yes = u;
-			if (u->weight < capacity && u->profit > best){
+			if (u->weight <= capacity && u->profit > best){
 				best = u->profit;
 				bestNode = u;
 			}
@@ -132,14 +133,16 @@ void StSpTree::bestFirstBandB(){
 void StSpTree::optimalSolution(Node *node){
 	//temporary vector to hold the items belonging to the subset of optimal solutions, which are
 	//added in reverse order
-	vector<Item*> temp; 
-	while (node->parent != nullptr){
-		if (node->parent->yes == node){
-			temp.push_back(items[node->level]);
+	vector<Item*> temp;
+	if (node != nullptr){
+		while (node->parent != nullptr){
+			if (node->parent->yes == node){
+				temp.push_back(items[node->level]);
+			}
+			node = node->parent;
 		}
-		node = node->parent;
+		reverse(temp.begin(), temp.end());
 	}
-	reverse(temp.begin(), temp.end());
 	optimal = temp;
 }
 
